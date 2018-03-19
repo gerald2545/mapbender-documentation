@@ -1,17 +1,18 @@
 .. _templates:
 
-How to create your own Template?
+How to create your own template?
 ################################
 
-Mapbender comes with application templates you can use. But usually you want to use your own template with your own corporate design. 
+Mapbender comes with application templates out of the box. But usually you want to use your own template with your own corporate design. 
 This document will show you how to create a Workshop DemoBundle for demonstration purposes.
+The templates that come with Mapbender for demonstration purpose are located in the `Template`directory in the CoreBundle. To prevent overwriting your custom templates after an Mapbender upgrade you should create an extra bundle that store your custom files.
 
-From version 3.0.4.0 on you can change the style of your application with the css-Editor. You find the documentation about the css-editor at :doc:`How to change the style of your application with the css-editor? <css>`.
-
+Since version 3.0.4.0 you can change the style of your application with the built-in CSS-Editor. You find the documentation about the CSS-editor at :doc:`How to change the style of your application with the CSS-editor? <css>`.
 
 How to create your own template?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+**Steps for including your templates:**
 There are some steps you have to follow on the way to your own template.
 
 * create your own bundle
@@ -23,7 +24,8 @@ There are some steps you have to follow on the way to your own template.
 
 Notice: We already prepared a Workshop/DemoBundle that you can use as a template. You can download it here:
 
-* Workshop/DemoBundle at https://github.com/mapbender/mapbender-workshop 
+* after Version 3.0.6 at https://github.com/mapbender/mapbender-workshop/tree/3.0.6
+* before Version 3.0.6 at https://github.com/mapbender/mapbender-workshop/tree/master
 
 
 Create your own bundle
@@ -33,59 +35,45 @@ User bundles are stored in the src-directory.
 
 This is how the structure can look like:
 
-.. code-block:: bash
+.. code-block:: php
 
  src/Workshop/DemoBundle/
-                    WorkshopDemoBundle.php 
-                    /Resources
-                                  /public
-                                         demo_fullscreen.css  
-                                         /imgage
-                                             workshop.ico
-                                             workshop_logo.png
-                                             print.png
-                                             ...
-                                  /views
-					/Template								
-                                             fullscreen_demo.html.twig
-                        /Template
-		                DemoFullscreen.php
-
+    WorkshopDemoBundle.php
+    /Resources
+    /public
+        demo_fullscreen.css
+    /image
+        workshop.ico
+        workshop_logo.png
+        print.png
+        ...
+    /views
+        /Template
+            fullscreen_demo.html.twig
+    /Template
+        DemoFullscreen.php
 
 Create a new namespace 
 ***********************
 
-The file WorkshopDemoBundle.php creates the namespace for the bundle and refers to the template and to your css-file(s).
+The file WorkshopDemoBundle.php creates the namespace for the bundle and refers to the template and to your css-files.
 
 
-.. code-block:: html+php
+.. code-block:: php
 
     <?php
-    /*
-     * This file is part of the Mapbender 3 project.
-     *
-     * For the full copyright and license information, please view the LICENSE
-     * file that was distributed with this source code.
-     */
+
     namespace Workshop\DemoBundle;
+
     use Mapbender\CoreBundle\Component\MapbenderBundle;
-    /**
-     * WorkshopDemo
-     *
-     * @author Astrid Emde
-     */
+
     class WorkshopDemoBundle extends MapbenderBundle
     {
-        /**
-         * @inheritdoc
-         */
         public function getTemplates()
         {
             return array('Workshop\DemoBundle\Template\DemoFullscreen');
         }
-        /**
-         * @inheritdoc
-         */
+
         public function getElements()
         {
             return array(
@@ -93,9 +81,7 @@ The file WorkshopDemoBundle.php creates the namespace for the bundle and refers 
             );
         }
     }
-
-
-
+    ?>
 
 Create your own template file
 *****************************
@@ -105,7 +91,7 @@ In our example the template file is called FullscreenDemo.php. You find it at sr
 In the template file you define the name of your template, the regions that you want to provide and refer to a twig file.
 
 
-.. code-block:: html+php
+.. code-block:: php
 
  <?php
 
@@ -124,64 +110,22 @@ In the template file you define the name of your template, the regions that you 
  }
  ....
 
- static public function listAssets()
+ public static function listAssets()
  {
-        $assets = array(
-            'css' => array('@MapbenderCoreBundle/Resources/public/sass/template/fullscreen.scss','@WorkshopDemoBundle/Resources/public/demo_fullscreen.css'),
-            'js'    => array(
-                '/components/underscore/underscore-min.js',
-                '@FOMCoreBundle/Resources/public/js/widgets/popup.js',
-                '@FOMCoreBundle/Resources/public/js/frontend/sidepane.js',
-                '@FOMCoreBundle/Resources/public/js/frontend/tabcontainer.js',
-                '@MapbenderCoreBundle/Resources/public/regional/vendor/notify.0.3.2.min.js',
-                "/components/datatables/media/js/jquery.dataTables.min.js",
-                '/components/jquerydialogextendjs/jquerydialogextendjs-built.js',
-                "/components/vis-ui.js/vis-ui.js-built.js"
+    $assets = array(
+        'css' => array('@MapbenderCoreBundle/Resources/public/sass/template/fullscreen.scss','@WorkshopDemoBundle/Resources/public/demo_fullscreen.css'),
+        'js'    => array(
+            '/components/underscore/underscore-min.js',
+            ...
+        ),
+        'trans' => array()
+    );
 
-            ),
-            'trans' => array()
-        );
     return $assets;
  }
 
  ...
  ->render('WorkshopDemoBundle:Template:demo_fullscreen.html.twig',...
-
-
-
-Adding properties for your "sidepane" region
-********************************************
-
-For a "sidepane" region are "tabs" and "accordion" properties supported.
-
-* "tabs" orders Mapbender elements in tabs
-* "accordion" displays Mapbender elements as an accordion list
-
-For adding you define the function "getRegionsProperties" in the template file.
-
-For configuration you check an option in your application's configuration.
-
-
-.. code-block:: php
-
-    /**
-      @inheritdoc
-     */
-    public static function getRegionsProperties()
-    {
-        return array(
-            'sidepane' => array(
-                'tabs' => array(
-                    'name' => 'tabs',
-                    'label' => 'mb.manager.template.region.tabs.label'),
-                'accordion' => array(
-                    'name' => 'accordion',
-                    'label' => 'mb.manager.template.region.accordion.label')
-            )
-        );
-    }
-
-
 
 
 Create your own twig-file
@@ -301,7 +245,7 @@ Add your new css-file to the listAssets function as last array-entry:
 .. code-block:: php
 
 
-    static public function listAssets()
+    public static function listAssets()
     {
         $assets = array(
             'css' => array('@MapbenderCoreBundle/Resources/public/sass/template/fullscreen.scss','@WorkshopDemoBundle/Resources/public/demo_fullscreen.css'),
@@ -323,8 +267,7 @@ Add your new css-file to the listAssets function as last array-entry:
 
 .. code-block:: php
 
-    public function render($format = 'html', $html = true, $css = true,
-            $js = true)
+    public function render($format = 'html', $html = true, $css = true, $js = true)
     {
         $templating = $this->container->get('templating');
         return $templating
@@ -335,8 +278,6 @@ Add your new css-file to the listAssets function as last array-entry:
                             'js' => $js,
                             'application' => $this->application));
     }
-
-
 
 Use your new template in mapbender.yml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -362,7 +303,7 @@ Before your new template will show up you have to register your bundle in the fi
 
 * mapbender/app/AppKernel.php
 
-.. code-block:: html+php
+.. code-block:: php
 
  class AppKernel extends Kernel
  {
@@ -401,24 +342,14 @@ but these need to be copied into the public web folder:
 .. code-block:: bash
 
     app/console assets:install web
-
-
-Alternatively, as a developer, you might want to use the symlink switch on that command to
-symlink instead of copy. This will make editing assets inside the bundle
-directories way easier.
-
-.. code-block:: bash
-
-   app/console assets:install web --symlink --relative
+    or
+    app/console assets:install web --symlink --relative
 
 
 Now your template should show up in the template list when you create a new application.
 
-You can change the template for existing applications in the table *mb_core_application* in column *template*.
-
-For the WorkshopDemoBundle you can change *Mapbender\CoreBundle\Template\Fullscreen* to *Workshop\DemoBundle\WorkshopDemoBundle*.
-
-
+Usecases
+~~~~~~~~
 
 How to change your design?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -453,7 +384,6 @@ You can adjust the title and the favicon also in the twig-file:
 
 .. code-block:: yaml
 
-
  {% block title %}Workshop - {{ application.title }}{% endblock %}
 
  {% block favicon %}{{ asset('bundles/workshopdemo/imgage/workshop.ico') }}{% endblock %}
@@ -463,7 +393,7 @@ You can adjust the title and the favicon also in the twig-file:
 How to change the buttons?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Mapbender uses Fonts from the FontAwesome collection:
+Mapbender uses 'Font Awesome Icons' font icon collection:
 
 .. code-block:: css
 
@@ -472,32 +402,21 @@ Mapbender uses Fonts from the FontAwesome collection:
    src: url("../../bundles/fomcore/images/icons/fontawesome-webfont.eot?v=3.0.1");
    src: url("../../bundles/fomcore/images/icons/fontawesome-webfont.eot?#iefix&v=3.0.1") format("embedded-opentype"), url("../../bundles/fomcore/images/icons/fontawesome-webfont.woff?v=3.0.1") format("woff"), url("../../bundles/fomcore/images/icons/fontawesome-webfont.ttf?v=3.0.1") format("truetype");
    font-weight: normal;
-   font-style: normal; }
-
+   font-style: normal; 
+ }
 
 In your css-file you can refer to a font images like this:
 
 .. code-block:: css
 
   .iconPrint:before {
-    content: "\f02f";}
+    content: "\f02f";
+  }
 
 If you want to use an image you could place the image in your bundle and refer to it like this
 
 .. code-block:: css
 
   .iconPrint:before {
-   content:url("imgage/print.png");}
-
-
-Try this out
-~~~~~~~~~~~~
-
-* you can download the Workshop/DemoBundle at https://github.com/mapbender/mapbender-workshop 
-* change the color of your icons
-* change the size of your icons
-* change the color of the toolbar
-* use an image instead of a font-icon for your button
-* move the position of your overview to the left
-* Have a look at the workshop files to see how it works
-
+    content:url("imgage/print.png");
+  }

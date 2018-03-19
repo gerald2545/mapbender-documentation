@@ -4,10 +4,9 @@ Wie werden eigene Style-Vorlagen (templates) erzeugt?
 #####################################################
 
 Mapbender beinhaltet bereits erzeugte Anwendungs-Vorlagen. Häufig sollen eigene Anwendungs-Vorlagen und Administrationsoberflächen mit Ihrem eigenen Corporate Design verwendet werden.
-Die bereits vorhandenen Vorlagen befinden sich zu Demonstrationszwecken im Mapbender CoreBundle (application/mapbender/src/Mapbender/CoreBundle). Um Probleme bei einem Upgrade zu vermeiden, sollten Sie für personalisierte Oberflächen ein eigenes Bundle verwenden.
+Die bereits vorhandenen Vorlagen befinden sich zu Demonstrationszwecken im Mapbender CoreBundle `Template` Verzeichnis. Um Probleme bei einem Upgrade zu vermeiden, sollten Sie für personalisierte Oberflächen ein eigenes Bundle verwenden.
 
-Ab der Version 3.0.4.0 kann der Stil einer einzelner Anwendung auch über den css-Editor angepasst werden. Die Dokumentation zum css-Editor finden Sie unter :doc:`Wie kann der Stil einer Anwendung mit dem css-Editor angepasst werden? <css>`.
-
+Ab der Version 3.0.4.0 kann der Stil einer einzelnen Anwendung ebenfalls über den integrierten CSS-Editor angepasst werden. Die Dokumentation zum css-Editor finden Sie unter :doc:`Wie kann der Stil einer Anwendung mit dem CSS-Editor angepasst werden? <css>`.
 
 Wie werden eigene Vorlagen erzeugt?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +15,7 @@ Wie werden eigene Vorlagen erzeugt?
 
 * Erzeugen eines eigenen Bundles
 * Template PHP-Datei zur Registrierung der eigenen Vorlage erzeugen
-* Erzeugen einer eigenen TWIG-Datei
+* Erzeugen einer eigenen Twig-Datei
 * Erzeugen eigener CSS-Datei(en)
 * Registrierung des Bundles in der Datei app/AppKernel.php
 * Verwenden der neuen Vorlage
@@ -40,24 +39,23 @@ Anwender-Bundles werden im src-Verzeichnis abgelegt.
 
 Die Struktur kann wie folgt aussehen:
 
-.. code-block:: bash
+.. code-block:: php
 
- src/Workshop/DemoBundle/
-                    WorkshopDemoBundle.php
-                    /Resources
-                                  /public
-                                         demo_fullscreen.css
-                                         /image
-                                             workshop.ico
-                                             workshop_logo.png
-                                             print.png
-                                             ...
-                                  /views
-					/Template
-                                             fullscreen_demo.html.twig
-                        /Template
-		                DemoFullscreen.php
-
+src/Workshop/DemoBundle/
+    WorkshopDemoBundle.php
+    /Resources
+    /public
+        demo_fullscreen.css
+    /image
+        workshop.ico
+        workshop_logo.png
+        print.png
+        ...
+    /views
+        /Template
+            fullscreen_demo.html.twig
+    /Template
+        DemoFullscreen.php
 
 Die folgenden Dateien müssen für das Design bearbeitet werden:
 
@@ -68,27 +66,31 @@ Die folgenden Dateien müssen für das Design bearbeitet werden:
 Erzeugen eines neuen Namespaces
 *******************************
 
-Die Datei WorkshopDemoBundle.php erzeugt den Namespace für das Bundle und referenziert auf das Template und zu den eigenen css-Datei(en).
+Die Datei WorkshopDemoBundle.php erzeugt den Namespace für das Bundle und referenziert auf das Template und zu den eigenen CSS-Dateien.
 
 
 .. code-block:: php
 
     <?php
+
     namespace Workshop\DemoBundle;
+
     use Mapbender\CoreBundle\Component\MapbenderBundle;
+
     class WorkshopDemoBundle extends MapbenderBundle
     {
         public function getTemplates()
         {
             return array('Workshop\DemoBundle\Template\DemoFullscreen');
         }
+
         public function getElements()
         {
             return array(
             );
         }
     }
-
+    ?>
 
 
 Anlegen der eigenen Template-Datei
@@ -96,10 +98,10 @@ Anlegen der eigenen Template-Datei
 
 In unserem Beispiel heißt die Template-Datei FullscreenDemo.php. Sie befindet sich unter src/Workshop/DemoBundle/Template/FullscreenDemo.php.
 
-In der Template-Datei wir der Name des Templates, die Regionen die angelegt werden sollen sowie die verwendete TWIG-Datei definiert.
+In der Template-Datei wir der Name des Templates, die Regionen die angelegt werden sollen sowie die verwendete Twig-Datei definiert.
 
 
-.. code-block:: bash
+.. code-block:: php
 
  <?php
 
@@ -118,16 +120,17 @@ In der Template-Datei wir der Name des Templates, die Regionen die angelegt werd
  }
  ....
 
- static public function listAssets()
+ public static function listAssets()
  {
-        $assets = array(
-            'css' => array('@MapbenderCoreBundle/Resources/public/sass/template/fullscreen.scss','@WorkshopDemoBundle/Resources/public/demo_fullscreen.css'),
-            'js'    => array(
-                '/components/underscore/underscore-min.js',
-                .....
-            ),
-            'trans' => array()
-        );
+    $assets = array(
+        'css' => array('@MapbenderCoreBundle/Resources/public/sass/template/fullscreen.scss','@WorkshopDemoBundle/Resources/public/demo_fullscreen.css'),
+        'js'    => array(
+            '/components/underscore/underscore-min.js',
+            ...
+        ),
+        'trans' => array()
+    );
+
     return $assets;
  }
 
@@ -135,16 +138,14 @@ In der Template-Datei wir der Name des Templates, die Regionen die angelegt werd
  ->render('WorkshopDemoBundle:Template:demo_fullscreen.html.twig',...
 
 
-
-
-Eigene TWIG-Datei erzeugen
+Eigene Twig-Datei erzeugen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Die TWIG-Dateien sind im folgenden Verzeichnis gespeichert:
+Die Twig-Dateien sind im folgenden Verzeichnis gespeichert:
 
 * mapbender\src\Mapbender\CoreBundle\Resources\views\Template
 
-Kopieren Sie eine existierende TWIG-Datei, speichern Sie diese unter einem neuen Namen und verändern Sie den Inhalt, z.B. die Farbe.
+Kopieren Sie eine existierende Twig-Datei, speichern Sie diese unter einem neuen Namen und verändern Sie den Inhalt, z.B. die Farbe.
 
 .. code-block:: bash
 
@@ -252,8 +253,8 @@ Ab der Mapbender Version 3.0.3.0 muss lediglich das css definiert werden, das vo
 
 Mit Hilfe von Firebug können Sie die bestehende Definition ermitteln, in Ihre CSS-Datei kopieren und hier anpassen.
 
-Auf die CSS-Dateien wird über das FOMManagerBundle und FOMUserBundle referenziert. Diese müssen unter app/Resources/ abgelegt werden. Die bereits enthaltenen TWIG-Dateien überschreiben nach der erfolgreichen Einrichtung die Standard-Einstellungen (Vorgaben aus der manager.html.twig Datei).
-Alternativ kann auch die bisherige TWIG-Datei kopiert und angepasst werden.
+Auf die CSS-Dateien wird über das FOMManagerBundle und FOMUserBundle referenziert. Diese müssen unter app/Resources/ abgelegt werden. Die bereits enthaltenen Twig-Dateien überschreiben nach der erfolgreichen Einrichtung die Standard-Einstellungen (Vorgaben aus der manager.html.twig Datei).
+Alternativ kann auch die bisherige Twig-Datei kopiert und angepasst werden.
 
 .. code-block:: bash
 
@@ -283,7 +284,7 @@ Fügen Sie die neue CSS-Datei in der Funktion listAssets als letzten Eintrag ein
 .. code-block:: php
 
 
-    static public function listAssets()
+    public static function listAssets()
     {
         $assets = array(
             'css' => array('@MapbenderCoreBundle/Resources/public/sass/template/fullscreen.scss','@WorkshopDemoBundle/Resources/public/demo_fullscreen.css'),
@@ -302,11 +303,9 @@ Fügen Sie die neue CSS-Datei in der Funktion listAssets als letzten Eintrag ein
         return $assets;
     }
 
-
 .. code-block:: php
 
-    public function render($format = 'html', $html = true, $css = true,
-            $js = true)
+    public function render($format = 'html', $html = true, $css = true, $js = true)
     {
         $templating = $this->container->get('templating');
         return $templating
@@ -317,8 +316,6 @@ Fügen Sie die neue CSS-Datei in der Funktion listAssets als letzten Eintrag ein
                             'js' => $js,
                             'application' => $this->application));
     }
-
-
 
 Verwenden der neuen Vorlage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -410,7 +407,7 @@ Das Logo (Standard ist das Mapbender Logo) kann in der Datei parameters.yml ange
  server_logo:   bundles/workshopdemo/image/workshop_logo.png
 
 
-Das Logo kann auch in der TWIG-Datei angepasst werden:
+Das Logo kann auch in der Twig-Datei angepasst werden:
 
 .. code-block:: html
 
@@ -420,10 +417,9 @@ Das Logo kann auch in der TWIG-Datei angepasst werden:
 Wie kann der Anwendungstitel und das Favicon angepasst werden?
 **************************************************************
 
-Der Anwendungstitel und das Favicon kann auch in der TWIG-Datei angepasst werden:
+Der Anwendungstitel und das Favicon kann auch in der Twig-Datei angepasst werden:
 
 .. code-block:: yaml
-
 
  {% block title %}Workshop - {{ application.title }}{% endblock %}
 
@@ -443,7 +439,8 @@ Mapbender verwendet Schrift-Icons auf der FontAwesome Collection:
    src: url("../../bundles/fomcore/images/icons/fontawesome-webfont.eot?v=3.0.1");
    src: url("../../bundles/fomcore/images/icons/fontawesome-webfont.eot?#iefix&v=3.0.1") format("embedded-opentype"), url("../../bundles/fomcore/images/icons/fontawesome-webfont.woff?v=3.0.1") format("woff"), url("../../bundles/fomcore/images/icons/fontawesome-webfont.ttf?v=3.0.1") format("truetype");
    font-weight: normal;
-   font-style: normal; }
+   font-style: normal; 
+ }
 
 
 In der CSS-Datei können Sie zu den Icons der Schriftart folgendermaßen verweisen:
@@ -451,11 +448,13 @@ In der CSS-Datei können Sie zu den Icons der Schriftart folgendermaßen verweis
 .. code-block:: css
 
   .iconPrint:before {
-    content: "\f02f";}
+    content: "\f02f";
+  }
 
 Wenn Sie ein Bild nutzen möchten, legen Sie dieses am Besten in Ihrem Bundle ab und referenzieren es auf die folgende Art und Weise:
 
 .. code-block:: css
 
   .iconPrint:before {
-   content:url("imgage/print.png");}
+    content:url("imgage/print.png");
+  }
