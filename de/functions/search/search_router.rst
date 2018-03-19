@@ -1,7 +1,7 @@
 .. _search_router_de:
 
 Search Router
-***********************
+*************
 
 Dieses Element erzeugt ein Suchformular mit Trefferausgabe. Das Formular und die Trefferausgabe sind dabei konfigurierbar. Zur Zeit wird eine generische SQL Suche unterstützt, weitere Entwicklungen werden folgen (z.B. WFS, Solr). 
 
@@ -117,7 +117,7 @@ Die gleiche Logik wird beim select-Stil verfolgt. Jede Angabe, die Sie machen ü
 
 Beachten Sie, dass die hexadezimalen Farbwerte in Anführungszeichen angegeben werden müssen, da das #-Zeichen ansonsten als Kommentar interpretiert wird.
 
-Das folgende Beispiel erzeigt grüne (ungefüllte) Objekte und stellt das selektierte Objekt in rot dar:
+Das folgende Beispiel erzeugt grüne (ungefüllte) Objekte und stellt das selektierte Objekt in rot dar:
 
 .. code-block:: yaml
 
@@ -147,7 +147,7 @@ Der Konfigurationsdialog zu diesem Konfigurationsbeispiel sieht wie folgt aus:
 .. image:: ../../../figures/de/search_router_example_dialog.png
      :scale: 80
 
-Der Elementitel (*Title*) lautet Suchen. Dieser wieder in der Sidepane als Titel angezeigt. Da das Element in der Sidepane eingebunden wird und nicht als Button, wurde bei Dialog kein Haken gesetzt. Der *Timeout factor* wurde auf 2 gestellt. In den Feldern *Width* und *Height* stehen zwar Werte, diese werden in der Anwendung jedoch nicht miteinbezogen, da das Element in der Sidepane konfiguriert wird. Es wurde über das ``+`` -Zeichen bei *Routes* eine Suche eingebunden, die die Bezeichnung (*Title*) Mapbender User trägt. In *Configuration* wurde die yaml-Konfiguration des Elements eingefügt. Vollständig lautet diese:
+Der Elementitel (*Title*) lautet Suchen. Dieser wird wieder in der Sidepane als Titel angezeigt. Da das Element in der Sidepane eingebunden wird und nicht als Button, wurde bei Dialog kein Haken gesetzt. Der *Timeout factor* wurde auf 2 gestellt. In den Feldern *Width* und *Height* stehen zwar Werte, diese werden in der Anwendung jedoch nicht miteinbezogen, da das Element in der Sidepane konfiguriert wird. Es wurde über das ``+`` -Zeichen bei *Routes* eine Suche eingebunden, die die Bezeichnung (*Title*) Mapbender User trägt. In *Configuration* wurde die yaml-Konfiguration des Elements eingefügt. Vollständig lautet diese:
 
 .. code-block:: yaml
 
