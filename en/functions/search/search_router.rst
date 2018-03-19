@@ -1,10 +1,9 @@
 .. _search_router:
 
 Search Router
-***********************
+*************
 
-Search frontend GUI for plugable search engine modules. Right now a generic SQL search engine
-is provided, with more to come (think Lucene enhanced search, etc.)
+This element creates a configurable search formular with result output. At this time generic SQL search is supported, with more to come (WFS, Solr, ...).
 
 .. image:: ../../../figures/search_router.png
      :scale: 80
@@ -27,8 +26,12 @@ The SearchRouter needs access to the database where the search tables are. You h
 * **Width:**  Width of the dialog (only for dialog, not sidepane)
 * **Height:**  Height of the dialog (only for dialog, not sidepane)
 * **Routes:** Collection of search routes.
+* **Title**: Search Title (appears, when a search is added to Routes by using +)
+* **Configuration**: Field to configure the search (ppears, when a search is added to Routes by using +)
 
-You can define Searches (Routes) with the ``+`` Button. Each Search has a ``title`` which will show up in the search form in a selectbox where you can choose the search you want to use. The definition of the search is done in YAML syntax in the textarea configuration. Here you define the database connection, the Search tables/views, the design of the form and of the result table.
+You can define Searches (Routes) with the ``+`` Button. Each Search has a ``title`` which will show up in the search form in a selectbox where you can choose the search you want to use, and a ``configuration``. The definition of the search is done in YAML syntax in the textarea configuration. Here you define the database connection, the Search tables/views, the design of the form and of the result table.
+The element may be integrated into the sidepane or as a button into the toolbar. To configure a button visit the documentation at `Button <../misc/button.html>`_.
+
 
 Example of a route-configuration in the ``configuration`` area:
 
@@ -62,123 +65,61 @@ Example of a route-configuration in the ``configuration`` area:
                 maxScale: null
 
 
-YAML-Definition
+Comparison Mode
 ---------------
 
-For mapbender.yml:
-
-.. code-block:: yaml
-
-   target: map  # for result visualization
-   asDialog: true  # render inside a dialog or not
-   timeoutFactor:  3  # timeout factor (multiplied with autcomplete delay) to prevent autocomplete right after a search has been started
-   height: 500 # height of the dialog
-   width: 700 # width of the dialog
-   routes:      # collection of search routes
-       demo_polygon:       # machine readable name
-      class: Mapbender\CoreBundle\Component\SQLSearchEngine  # Search engine to use
-      class_options:  # these are forwarded to the search engine
-          connection: search_db    # search_db  # DBAL connection name to use, use ~ for the default one
-          relation: polygons  # Relation to select from, you can use subqueries
-          attributes: 
-              - gid  # array of columns to select, expressions are possible
-              - name 
-              - type
-          geometry_attribute: geom  # name of the geometry column to query. Note: projection of geom has to be the same as map-Element projection
-      form:  # search form configuration
-          name:  # field name, use relation column name to query or anything else for splitted fields (see below)
-              type: text  # field type, usually text or integer
-              options:  # field options
-                  required: false  # HTML5 required attribute
-                  label: Name  # Enter a custom label, otherwise the label will be derived off the field name
-                  attr:  # HTML attributes to inject
-                      data-autocomplete: on  # this triggers autocomplete
-                      data-autocomplete-distinct: on  # This forces DISTINCT select
-                      data-autocomplete-using: type   # komma separierte Liste von anderen Eingabefeldern, in denen WHERE Angaben für die Autovervollständigung gemacht werden                
-              compare: ilike  # See note below for compare modes
-          type:
-              type: choice
-              options:
-                  empty_value: Please select a type.
-                  required: false
-                  choices:
-                      A: A
-                      B: B
-                      C: C
-                      D: D
-                      E: E
-      results:
-          view: table  # only result view type for now
-          count: true # show number of results
-          headers:  # hash of table headers and the corresponding result columns
-              gid: ID  # column name -> header label
-              name: Name
-              type: Type
-          callback:  # What to do on hover/click
-              event: click  # result row event to listen for (click or mouseover)
-              options:
-                  buffer: 10
-                  minScale: ~  # scale restrictions for zooming, ~ for none
-                  maxScale: ~
-          results:
-              styleMap:  # See below
-                  default:
-                      strokeColor: '#00ff00'
-                      strokeOpacity: 1
-                      fillOpacity: 0
-                  select:
-                      strokeColor: '#ff0000'
-                      fillColor: '#ff0000'
-                      fillOpacity: 0.4
-
-You need a button to show this element. See :ref:`button` for inherited configuration options.
-
-Compare modes
--------------
-
-Each field can be assigned a compare mode which is evaluated by the engine when building the search query. The SQL search
-engine has the following modes:
+For every field a comparison mode can be set, which should be used by the engine when the query is send. The SQL search engine has the following modes:
 
 * **exact:** exact comparison (key = val)
-* **iexact:** case-insensitive comparison
-* **like:** default, uses two-sided like
-* **like-left:** uses left-sided like
-* **like-right:** uses right-sided like
-* **ilike:** uses two-sided case-insensitive like (*searchstring*)
-* **ilike-left:** uses left-sided case-insensitive like (f.e *searchstring*)
-* **ilike-right:** uses right-sided case-insensitive like (f.e searchstring*) 
+* **iexact:** comparison ignoring cases (case-insensitive)
+* **like:** Standard, both-side 'like'
+* **like-left:** left-hand 'like'
+* **like-right:** right-hand 'like'
+* **ilike**: both-side 'like', (case-insensitive - \*searchstring\*)
+* **ilike-left:** left-side 'like' (case-insensitive - \*searchstring)
+* **ilike-right:** right-side 'like' (case-insensitive - searchstring\*)
 
+Styling the Results
+-------------------
 
-Result feature styling
-----------------------
+By default the results are shown in the default-OpenLayers Style, orange for hits and blue fo selected objects. The OpenLayer default Styling looks like this:
 
-By default, the result features are styled using the default styles OpenLayers provides. This gives the
-well-known orange look and blue look for the selected feature. If you want to override that, you can
-provide a styleMap configuration for the results like this:
+.. image:: ../../../figures/de/search_router_example_colour_orangeblue.png
+     :scale: 80
+
+You can overwride this by handing over a styleMap-Configuration, which could look like this:
 
 .. code-block:: yaml
 
     results:
         styleMap:
             default:
-                fillOpacity: 0
+                strokeColor: '#00ff00'  # Umrandungsfarbe
+                strokeOpacity: 1        # 1 - opak (keine Transparenz)
+                strokeWidth: 3          # Umrandingsbreite
+                fillColor: '#f0f0f0'    # Füllfarbe                
+                fillOpacity: 0          # Opazität Füllung, voll transparent, daher keine Füllung
+                pointRadius: 6          # Größe des Punktsymbols
             select:
-                fillOpacity: 0.4
+                strokeColor: '#0000ff'
+                strokeOpacity: 1
+                strokeWidth: 4
+                fillColor: '#ff00ff'
+                fillOpacity: 0.8
+                pointRadius: 10
 
-This will not draw polygon interiors, but only their outlines in default mode. The selected feature will
-have it's interior drawn with 60% transparency.
+This definition doesnt fill the polygons because opacity is set to null (fillOpacity: 0). They are only shown with a green frame. The selected objects in this example are filled with the color green and have an opacity of 0.8, surrounded by a blue line. This color configuration looks lie this:
 
-The default style properties will override the properties OpenLayers uses for the default style, therefore
-you only need to set properties you wish to change. If you omit the default part, OpenLayers default style
-will be used as is.
+.. image:: ../../../figures/de/search_router_example_colour_purplegreen.png
+     :scale: 80
 
-A similar logic applies to the select style – any property you provide will override the corresponding
-property of the *final* default style. Therefore the example above will *not* yield a blue look for the
-selected feature!
+The default settings override the OpenLayers-Default Settings, so you only have to state the things you want to overwride. If you state nothing, the default OpenLayer style will be used.
 
-Keep in mind to quote hex color codes as the pound sign will otherwise be treated as a inline comment!
+The select-style works the same way. Any statement you make woll overwrite the settings of the *final* default style.
 
-A more elaborate example with green (hollow) features and the selected one in red:
+Note, that the hexadeximal color values have to be stated in quotation marks, because the #-Symbol would be interpreted as a comment instead.
+
+The following example creates green (unflled) objects and shows the selected object in red:
 
 .. code-block:: yaml
 
@@ -193,36 +134,122 @@ A more elaborate example with green (hollow) features and the selected one in re
                 fillColor: '#ff0000'
                 fillOpacity: 0.4
 
+.. image:: ../../../figures/de/search_router_example_colour_redgreen.png
+     :scale: 80
 
-Class, Widget & Style
-=====================
+Configuration Examples
+======================
 
-* **Class:** Mapbender\\CoreBundle\\Element\\SearchRouter
-* **Widget:** mapbender.element.searchRouter.js, mapbender.element.searchRouter.Feature.js, mapbender.element.searchRouter.Search.js
-* **Style:** mapbender.element.searchRouter.css
+In this example a search was configured for the Mapbender user and added into the sidepane, usable under the ``+`` in Layouts.
 
-HTTP Callbacks
-==============
+.. image:: ../../../figures/de/add_sidepane.png
+     :scale: 80
 
-<route_id>/autocomplete
------------------------
+The confguration dialouge for this example looks like this:
 
-Autocomplete Ajax endpoint for given search route. Autocomplete is implemented
-using Backbone.js with the Mapbender.Autocomplete model implemented in
-mapbender.element.searchRouter.Search.js.
+.. image:: ../../../figures/de/search_router_example_dialog.png
+     :scale: 80
 
-<route_id>/search
------------------
+The element title (*Title*) is Search. It is againg diplayed as a title in the sidepane. The checkbox is unchecked, because the element is is implemented into the sidepane and not as a button. The *Timeout factor* is set to 2. The fields *Width* and *Height* are filled, but they wont be used in this application, because the element is configured in the sidepane. It is implemented via the ``+`` -Symbol and *Routes* into the search, called (*Title*) Mapbender User. The yaml-Configuration of the Element is written in *Configuration*. In Completion it reads:
 
-Search Ajax endpoint for given search route. Search is implemented using
-Backbone.js with the Mapbender.Search model implemented in
-mapbender.element.searchRouter.Search.js.
+.. code-block:: yaml
 
+  class: Mapbender\CoreBundle\Component\SQLSearchEngine
+  class_options:
+    connection: demo        # die Datenbank, auf die das Element zugreift
+    relation: mapbender_user      # die Tabelle, auf die das Element zugreift
+    attributes:          # entspricht den Tabellenspalten in der Datenbank, die angesprochen werden sollen
+      - gid
+      - orga
+      - town
+      - usertype
+    geometry_attribute: the_geom      # Definition der Geometrie Spalte
+  form:            # ab hier beginnt die Konfiguration des Formulars
+    orga:            # Feld für die Suche nach dem Namen des Mapbender Users
+      type: text
+      options:
+        required: false        # kein Pflichtfeld
+        label: 'Mapbender User'      # Überschrift über dem Feld
+        attr:          # zusätzlich definierbare Attribute
+          data-autocomplete: 'on'      # automatische Vervollständigung des eingetippten Suchbegriffs
+          data-autocomplete-distinct: 'on'
+      compare: ilike        # Vergleichsmodus
+    town:            # Feld für die Suche nach der Stadt
+      type: text
+      options:
+        required: false        # kein Pflichtfeld
+        label: Stadt        # Überschrift über dem Feld
+        attr:
+          data-autocomplete: 'on'
+          data-autocomplete-distinct: 'on'
+      compare: ilike
+    usertype:          # Feld für die Suche nach dem Nutzertyp
+      type: choice        # Feld mit Auswahlmöglichkeiten als Dropdown
+      options:
+        empty_value: 'Bitte auswählen...'    # Text, der angezeigt wird, bevor etwas ausgewählt wurde
+        choices:          # die Auswahlmöglichkeiten; werden wie folgt angegeben: "Eintrag in der Spalte der Datenbank": "Angezeiger Name in der Dropdown-Liste"
+          1: Company
+          2: Administration
+          3: University
+          4: User
+        required: false        # kein Pflichtfeld
+        label: Nutzertyp        # Überschrift über dem Feld
+      compare: exact        # Vergleichsmodus
+  results:          # Konfiguration der Ergebnisanzeige
+    view: table          # Tabelle ausgeben
+    count: true          # Anzahl der Ergebnisse anzeigen
+    headers:          # Titel der Spalte; werden wie folgt angegeben: Spaltenname in der Datenbank: Bezeichnung der Spalte in der Suchausgabe der Anwendung
+      gid: ID
+      orga: 'Mapbender User'
+      town: Stadt
+    callback:
+      event: click        # bei Klicken wird das Element selektiert
+      options:
+        buffer: 10
+        minScale: null
+        maxScale: 10000
+    styleMap:          # Styling der Punkte in der Karte
+      default:          # Styling aller angezeigten Punkte
+        strokeColor: '#003366'
+        strokeOpacity: 1
+        fillColor: '#3366cc'
+        fillOpacity: 0.5
+      select:          # Styling des selektierten Objekts
+        strokeColor: '#330000'
+        strokeOpacity: 1
+        fillColor: '#800000'
+        fillOpacity: 0.5
 
-Example
-==================
+With this configuration the search in the application looks like this:
 
-Example with autocomplete and individual result style:
+.. image:: ../../../figures/de/search_router_example_search.png
+     :scale: 80
+
+This picture illustrates which consequences the configurations in the yaml-definition have for the search formula:
+
+.. image:: ../../../figures/de/search_router_example_search_description.png
+     :scale: 80
+
+Displayed is the excerpt of the yaml-definition configureing the formula. Columns orga, town and usertype are used in the formula and implemented as the fields Mapebender User, Town and Usertype. Mapbender User and Town are type text, Usertype can be of various types. The text that should be displayed, if nothing is selected yet, is here "Please select…" (Nr. **1** – empty_value: ‚Please select...‘). The title above these fields is set with label (Nr. **2**). The attribute data-autocomplete: ‚on‘ results in a dropdown menu with recommendations from the database (Nr. **3**). Because compare: ilike is enabled it is not necessary to write the exact word. The search will find results that are only similar to the written term (Nr. **4** – Wheregr (the g is lowercase, nevertheless WhereGroup with uppercase G was found). The fieldtype choice is variable, possibilities are defined in choices (Nr. **5**). The table contains the possibilities as numbers (1, 2, 3, 4). In this example every number represents a text, which should be displayed in the dropdown menu.
+
+A complete search for the Mapbender User WhereGroup, in the Town Bonn, of the Usertype Company and the found results look like this:
+
+.. image:: ../../../figures/de/search_router_example_search_WG.png
+     :scale: 80
+
+Auf dieser Abbildung wird gezeigt, welche Auswirkungen die vorgenommenen Konfigurationen in der yaml-Definition auf die Anzeige der Ergebnisse haben:
+
+.. image:: ../../../figures/de/search_router_example_results_description.png
+     :scale: 80
+
+Auf dieser Abbildung ist lediglich die Konfiguration der Ergebnisse angezeigt. Die Anzahl der Ergebnisse wird aufgrund von count: true (siehe Nr. **1**) angezeigt. Anschließend werden die Spaltentitel unter headers definiert (siehe Nr. **2**). Hier wird zuerst die Bezeichnung der Spalte in der Tabelle angegeben, so dass definiert wird auf welche Tabellenspalte sich die Ergebnisanzeige bezieht. Nach dem Doppelpunkt wird dann angegeben, welcher Titel in der Anwendung angezeigt werden soll. In dem Block styleMap wird das Styling der Punkte vorgenommen. Der Block default (siehe Nr. **3**) bezieht sieht dabei auf alle Punkte und der Block select (siehe Nr. **4**) nur auf das ausgewählte Objekt.
+
+Da keines dieser Felder ein Pflichtfeld ist, kann die Suchabfrage auch nur mithilfe eines Feldes erfolgen.
+
+Weitere Konfigurationsbeispiele
+--------------------------------
+
+Beispiel mit Autovervollständigung und individueller Ergebnisanzeige:
 
 .. code-block:: yaml
 
@@ -282,11 +309,12 @@ Example with autocomplete and individual result style:
         fillColor: '#ff0000'
         fillOpacity: 0.8
 
-Example with selectbox:
+Beispiel mit Auswahlbox:
 
 .. code-block:: yaml
 
    Create or Replace view brd.qry_gn250_p as Select gid, name, gemeinde, bundesland, oba, geom from brd.gn250_p where oba = 'AX_Ortslage' OR oba = 'AX_Wasserlauf' order by name;
+
 
 .. code-block:: yaml
 
@@ -336,3 +364,94 @@ Example with selectbox:
         minScale: null
         maxScale: null
 
+
+YAML-Definition 
+----------------
+
+In der mapbender.yml Datei:
+
+.. code-block:: yaml
+
+   target: map # ID des Kartenelements
+   asDialog: true # true, Erebniswiedergabe in einem Dialogfeld
+   timeoutFactor:  3 # Timeout-Faktor (multipliziert mit autcomplete Verzögerung) um die Autovervollständigung zu verhindern, nachdem eine Suche gestartet wurde
+   height: 500 # Höhe des Dialogs
+   width: 700 # Breite des Dialogs
+   routes:    # Sammlung von Suchrouten
+       demo_polygon:  # für Maschinen lesbarer Name
+      class: Mapbender\CoreBundle\Component\SQLSearchEngine  #  Suchmaschine, die verwendet werden soll
+      class_options:  # Diese werden an die Suchmaschine weitergegeben
+          connection: digi_suche    # search_db  # DBAL Verbindungsname, der benutzt werden soll, benutzen sie ~ für default
+          relation: polygons # Verbindungsauswahl, Unterabfragen können verwendet werden
+          attributes: 
+              - gid  # Liste von Spalten auswählen, expressions are possible
+              - name 
+              - type
+          geometry_attribute: geom  # Name der Geometriesplate, die genutzt werden soll. Achtung: Projektion muss mit Projektion des map-Elements übereinstimmen
+      form:  # Einstellungen für das Suchformular
+          name:  # Feldname, Spaltenname der genutzt werden soll 
+              type: text  # Eingabefeld, normalerweise Text oder Zahlen
+              options:  # Einstellungen für das Eingabefeld
+                  required: false  # HTML5 benötigte Attribute
+                  label: Name  # benutzerdefinierte Beschriftung eingeben, sont wird die Beschriftung von dem Feldnamen abgeleitet
+                  attr:  # HTML5 benötigte Attribute
+                      data-autocomplete: on  # Attribut, um Autovervollständigung zu aktivieren
+                      data-autocomplete-distinct: on  # Attribut, dass Autovervollständigung aktiviert aber unterscheiden lässt
+                      data-autocomplete-using: type   # komma separierte Liste von anderen Eingabefeldern, in denen WHERE Angaben für die Autovervollständigung gemacht werden                
+              compare: ilike  # Siehe unten für weitere Vergleichsformen
+          type:
+              type: choice
+              options:
+                  empty_value: Please select a type.
+                  required: false
+                  choices:
+                      A: A
+                      B: B
+                      C: C
+                      D: D
+                      E: E
+      results:
+          view: table  # Ansicht der Ergebnisse, Ausgabe z.B. als Tabelle
+          count: true # Anzahl der Treffer anzeigen
+          headers:  # hBezeichnung der Tabellenüberschriften und der entsprechenden Ergebnisspalten
+              gid: ID  # Spaltenname -> Überschrift
+              name: Name
+              type: Type
+          callback:  # Was beim Klick und Mauszeiger halten passiert
+              event: click  # Ergebnisliste (click oder mouseover)
+              options:
+                  buffer: 10    # Puffert die Geometrieergebnise (Karteneinheiten) vor dem Zoomen
+                  minScale: ~   # Maßstabsbegrenzung beim Zoomen, ~ für keine Begrenzung
+                        maxScale: ~
+          results:
+              styleMap:  # Siehe unten für weitere Styles
+                  default:
+                      strokeColor: '#00ff00'
+                      strokeOpacity: 1
+                      fillOpacity: 0
+                  select:
+                      strokeColor: '#ff0000'
+                      fillColor: '#ff0000'
+                      fillOpacity: 0.4
+
+
+Class, Widget & Style
+=====================
+
+* **Class:** Mapbender\\CoreBundle\\Element\\SearchRouter
+* **Widget:** mapbender.element.searchRouter.js, mapbender.element.searchRouter.Feature.js, mapbender.element.searchRouter.Search.js
+* **Style:** mapbender.element.searchRouter.css
+
+
+HTTP Callbacks
+==============
+
+<route_id>/autocomplete
+-----------------------
+
+Automatisch vervollständigter Ajax Endpunkt für die vorgegebene Suchroute. Die Autovervollständigung  wird unter Verwendung von Backbone.js eingesetzt. Das Autovervollständigung-Modul ist implementiert in mapbender.element.searchRouter.Search.js.
+
+<route_id>/search
+-----------------
+
+Automatisch vervollständigter Ajax Endpunkt für die vorgegebene Suchroute. Die Suche  wird unter Verwendung von Backbone.js eingesetzt. Das Such-Modul ist implementiert in mapbender.element.searchRouter.Search.js.
