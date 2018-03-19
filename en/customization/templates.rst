@@ -5,7 +5,7 @@ How to create your own template?
 
 Mapbender comes with application templates out of the box. But usually you want to use your own template with your own corporate design. 
 This document will show you how to create a Workshop DemoBundle for demonstration purposes.
-The templates that come with Mapbender for demonstration purpose are located in the `Template`directory in the CoreBundle. To prevent overwriting your custom templates after an Mapbender upgrade you should create an extra bundle that store your custom files.
+The templates that come with Mapbender for demonstration purpose are located in the `Template`directory in the CoreBundle. To prevent overwriting your custom templates after an Mapbender upgrade you should create an extra bundle to safely store your custom files.
 
 Since version 3.0.4.0 you can change the style of your application with the built-in CSS-Editor. You find the documentation about the CSS-editor at :doc:`How to change the style of your application with the CSS-editor? <css>`.
 
@@ -54,7 +54,7 @@ This is how the structure can look like:
         DemoFullscreen.php
 
 Create a new namespace 
-***********************
+**********************
 
 The file WorkshopDemoBundle.php creates the namespace for the bundle and refers to the template and to your css-files.
 
@@ -147,7 +147,7 @@ Use the existing template from mapbender/src/Mapbender/CoreBundle/Resources/view
 Create your own css-file
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create an empty css-file and fill it with content. From Mapbender version 3.0.3.0 you only have to define the parts that have to look different from the default style of the element.
+Create an empty css-file and fill it with content. Since Mapbender version 3.0.3.0 you only have to define the parts that have to look different from the default style of the element.
 
 Firebug can help you to find out the styles you want to change.
 
@@ -220,7 +220,7 @@ When you open your new application a css-file will be created at:
 
 * web/assets/WorkshopDemoBundle__demo_fullscreen__css.css
 
-If you do further edits at your css file you may delete the generated css file in the assets directory to see the changes. You also have to clear the browser cache.
+If you do further edits at your css file you may have to delete the generated css file in the assets directory to see the changes. You should also clear the browser cache.
 
 .. code-block:: bash
 
@@ -351,8 +351,8 @@ Now your template should show up in the template list when you create a new appl
 Usecases
 ~~~~~~~~
 
-How to change your design?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I change my design?
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You have to edit the following files, if want to change the design
 
@@ -360,8 +360,8 @@ You have to edit the following files, if want to change the design
 * demo_fullscreen.css - changes of color, icons, fonts
 
 
-How to change the logo?
-~~~~~~~~~~~~~~~~~~~~~~~
+How do I change the logo?
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The logo (default is the Mapbender logo) can be changed in the parameters.yml. Which causes a global change. 
 
@@ -377,8 +377,8 @@ Or in the twig file:
  <img class="logo" height="40" alt="Workshop Logo" src="{{ asset('bundles/workshopdemo/imgage/workshop_logo.png')}}" />	
 
 
-How to change the title and favicon?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I change the title and favicon?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can adjust the title and the favicon also in the twig-file:
 
@@ -390,8 +390,8 @@ You can adjust the title and the favicon also in the twig-file:
 
 
 
-How to change the buttons?
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+How do I change the buttons?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Mapbender uses 'Font Awesome Icons' font icon collection:
 
