@@ -232,24 +232,25 @@ This picture illustrates which consequences the configurations in the yaml-defin
 
 Displayed is the excerpt of the yaml-definition configureing the formula. Columns orga, town and usertype are used in the formula and implemented as the fields Mapebender User, Town and Usertype. Mapbender User and Town are type text, Usertype can be of various types. The text that should be displayed, if nothing is selected yet, is here "Please select…" (Nr. **1** – empty_value: ‚Please select...‘). The title above these fields is set with label (Nr. **2**). The attribute data-autocomplete: ‚on‘ results in a dropdown menu with recommendations from the database (Nr. **3**). Because compare: ilike is enabled it is not necessary to write the exact word. The search will find results that are only similar to the written term (Nr. **4** – Wheregr (the g is lowercase, nevertheless WhereGroup with uppercase G was found). The fieldtype choice is variable, possibilities are defined in choices (Nr. **5**). The table contains the possibilities as numbers (1, 2, 3, 4). In this example every number represents a text, which should be displayed in the dropdown menu.
 
-A complete search for the Mapbender User WhereGroup, in the Town Bonn, of the Usertype Company and the found results look like this:
+A complete search for the Mapbender User WhereGroup, in the Town Bonn, of the Usertype Company and the found results will look like this:
 
 .. image:: ../../../figures/de/search_router_example_search_WG.png
      :scale: 80
 
-Auf dieser Abbildung wird gezeigt, welche Auswirkungen die vorgenommenen Konfigurationen in der yaml-Definition auf die Anzeige der Ergebnisse haben:
+This picture illustrates the consequences our configuration of the yaml-defnition had on the display of the results.
 
 .. image:: ../../../figures/de/search_router_example_results_description.png
      :scale: 80
 
-Auf dieser Abbildung ist lediglich die Konfiguration der Ergebnisse angezeigt. Die Anzahl der Ergebnisse wird aufgrund von count: true (siehe Nr. **1**) angezeigt. Anschließend werden die Spaltentitel unter headers definiert (siehe Nr. **2**). Hier wird zuerst die Bezeichnung der Spalte in der Tabelle angegeben, so dass definiert wird auf welche Tabellenspalte sich die Ergebnisanzeige bezieht. Nach dem Doppelpunkt wird dann angegeben, welcher Titel in der Anwendung angezeigt werden soll. In dem Block styleMap wird das Styling der Punkte vorgenommen. Der Block default (siehe Nr. **3**) bezieht sieht dabei auf alle Punkte und der Block select (siehe Nr. **4**) nur auf das ausgewählte Objekt.
+Here only the configuration of the results is shown. The number of results is shown because count: true (Nr. **1**) is enabled. The titles of the columns are defined in headeers (Nr. **2**). Here the name of the column is mentioned first, to define which results are referenced. After the colon we set the title which will be displayed in the application. In the block styleMap the points are styled. The block default (Nr. **3**) references all points, and the block select (Nr. **4**) only selected points.
 
-Da keines dieser Felder ein Pflichtfeld ist, kann die Suchabfrage auch nur mithilfe eines Feldes erfolgen.
+Because none of these fields are mandatory the search will work wih only on field.
 
-Weitere Konfigurationsbeispiele
---------------------------------
 
-Beispiel mit Autovervollständigung und individueller Ergebnisanzeige:
+Additional configuration examples
+---------------------------------
+
+Example with autocomplete and individualized display of results:
 
 .. code-block:: yaml
 
@@ -309,7 +310,7 @@ Beispiel mit Autovervollständigung und individueller Ergebnisanzeige:
         fillColor: '#ff0000'
         fillOpacity: 0.8
 
-Beispiel mit Auswahlbox:
+Example with selection box:
 
 .. code-block:: yaml
 
@@ -366,9 +367,9 @@ Beispiel mit Auswahlbox:
 
 
 YAML-Definition 
-----------------
+---------------
 
-In der mapbender.yml Datei:
+In the mapbender.yml file:
 
 .. code-block:: yaml
 
@@ -449,9 +450,9 @@ HTTP Callbacks
 <route_id>/autocomplete
 -----------------------
 
-Automatisch vervollständigter Ajax Endpunkt für die vorgegebene Suchroute. Die Autovervollständigung  wird unter Verwendung von Backbone.js eingesetzt. Das Autovervollständigung-Modul ist implementiert in mapbender.element.searchRouter.Search.js.
+Auto-completed Ajax endpoint for the predefined search route. The auto-complete uses Backbone.js. The auto-complete is implemented in mapbender.element.searchRouter.Search.js.
 
 <route_id>/search
 -----------------
 
-Automatisch vervollständigter Ajax Endpunkt für die vorgegebene Suchroute. Die Suche  wird unter Verwendung von Backbone.js eingesetzt. Das Such-Modul ist implementiert in mapbender.element.searchRouter.Search.js.
+Auto-completed Ajax endpoint for the predefined search route. The search module uses Backbone.js. The auto-complete is implemented in mapbender.element.searchRouter.Search.js.
