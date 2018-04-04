@@ -271,7 +271,6 @@ Define textfields in your print template for every information you would like to
        srid: 4326              # source EPSG-code of data
        print:                  # print template to offer for feature data print
          templates:
-        templates:
           - template: a4_portrait_official_feature_data_demo
             label: Demo with feature information print (portrait)
           - template: a4_landscape_official_feature_data_demo
